@@ -62,7 +62,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="WpfUtilities, Version=4.0.0.0, Culture=neutral, PublicKeyToken=a069dee354d95f76, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\WpfUtilities.dll</HintPath>
+      <HintPath>..\Libraries\WpfUtilities.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

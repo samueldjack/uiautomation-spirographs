@@ -34,12 +34,12 @@ namespace AutomationExample
         private void AutomateMainWindow(AutomationElement mainWindow)
         {
             // find the Paint.Net drawing Canvas
-            var canvas = mainWindow.FindDescendentByIdPath(new[] { "appWorkspace", "workspacePanel", "DocumentView", "panel", "surfaceBox" });
+            var canvas = mainWindow.FindDescendentByIdPath(new[] { "appWorkspace", "workspacePanel", "DocumentView", "scrollableCanvasControl", "canvasView" });
 
-            DrawSineWaveOnCanvas(canvas);
+            DrawSpirographWaveOnCanvas(canvas);
 
             // the the audience appreciate the masterpiece!
-            Delay();
+            Delay(5000);
 
             var closeButton = mainWindow.FindDescendentByIdPath(new[] {"TitleBar", "Close"});
             closeButton.GetInvokePattern().Invoke();
@@ -51,6 +51,46 @@ namespace AutomationExample
 
             Mouse.MoveTo(dontSaveButton.GetClickablePoint().ToDrawingPoint());
             Mouse.Click(MouseButton.Left);
+        }
+
+        private void DrawSpirographWaveOnCanvas(AutomationElement canvasElement)
+        {
+            var bounds = canvasElement.Current.BoundingRectangle;
+
+            var centerX = (int)(bounds.X + bounds.Width / 2);
+            int centerY = (int)(bounds.Y + bounds.Height / 2);
+
+            var points = GetPointsForSpirograph(centerX, centerY, 1.02, 5, 2, 0, 300);
+
+            Mouse.MoveTo(points.First());
+            Mouse.Down(MouseButton.Left);
+
+            AnimateMouseThroughPoints(points);
+
+            Mouse.Up(MouseButton.Left);
+        }
+
+        private void AnimateMouseThroughPoints(IEnumerable<Point> points)
+        {
+            foreach (var point in points)
+            {
+                Mouse.MoveTo(point);
+                Delay(5);
+            }
+        }
+
+        private IEnumerable<Point> GetPointsForSpirograph(int centerX, int centerY, double littleR, double bigR, double a, int tStart, int tEnd)
+        {
+            // Equations from http://www.mathematische-basteleien.de/spirographs.htm
+            for (double t = tStart; t < tEnd; t += 0.1)
+            {
+                var rDifference = bigR - littleR;
+                var rRatio = littleR / bigR;
+                var x = (rDifference * Math.Cos(rRatio * t) + a * Math.Cos((1 - rRatio) * t)) * 25;
+                var y = (rDifference * Math.Sin(rRatio * t) - a * Math.Sin((1 - rRatio) * t)) * 25;
+
+                yield return new Point(centerX + (int)x, centerY + (int)y);
+            }
         }
 
         private void DrawSineWaveOnCanvas(AutomationElement canvasElement)
@@ -77,18 +117,9 @@ namespace AutomationExample
             }
         }
 
-        private void AnimateMouseThroughPoints(IEnumerable<Point> points)
+        private void Delay(int milliseconds = 1000)
         {
-            foreach (var point in points)
-            {
-                Mouse.MoveTo(point);
-                Thread.Sleep(5);
-            }
-        }
-
-        private void Delay()
-        {
-            Thread.Sleep(1000);
+            Thread.Sleep(milliseconds);
         }
     }
 }

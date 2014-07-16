@@ -1,0 +1,22 @@
+﻿<Window x:Class="AutomationExample.Window1"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Window1" SizeToContent="WidthAndHeight">
+  <Border Margin="5" BorderThickness="2" BorderBrush="DarkBlue">
+  <Grid Margin="5">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+      </Grid.RowDefinitions>
+
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="Auto"/>
+      </Grid.ColumnDefinitions>
+
+      <TextBlock Grid.Row="0" Grid.Column="0" Text="Paint.Net Path:" Margin="5,5,2,5"/>
+      <TextBox x:Name="_path" Grid.Row="0" Grid.Column="1" Text="C:\Program Files\Paint.NET\PaintDotNet.exe" Margin="2,5,5,5"/>
+      <Button Content="Automate!" Margin="5" Click="ButtonBase_OnClick" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Center"/>
+    </Grid>
+  </Border>
+</Window>

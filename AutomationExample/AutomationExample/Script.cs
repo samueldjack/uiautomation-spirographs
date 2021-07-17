@@ -7,8 +7,8 @@ using System.Text;
 using System.Threading;
 using System.Windows.Automation;
 using System.Windows.Input;
-using Microsoft.Test;
-using Mouse=Microsoft.Test.Mouse;
+//using Microsoft.Test;
+//using Mouse=Microsoft.Test.Mouse;
 
 namespace AutomationExample
 {
@@ -36,21 +36,25 @@ namespace AutomationExample
             // find the Paint.Net drawing Canvas
             var canvas = mainWindow.FindDescendentByIdPath(new[] { "appWorkspace", "workspacePanel", "DocumentView", "scrollableCanvasControl", "canvasView" });
 
-            DrawSpirographWaveOnCanvas(canvas);
 
-            // the the audience appreciate the masterpiece!
+            DrawSpirographWaveOnCanvas(canvas);
+            //DrawSineWaveOnCanvas(canvas);
+
+            // the audience appreciate the masterpiece!
             Delay(5000);
 
-            var closeButton = mainWindow.FindDescendentByIdPath(new[] {"TitleBar", "Close"});
+            var closeButton = mainWindow.FindDescendentByIdPath(new[] { "TitleBar", "Close" });
             closeButton.GetInvokePattern().Invoke();
 
             // give chance for the close dialog to open
             Delay();
 
-            var dontSaveButton = mainWindow.FindDescendentByNamePath(new[] {"Unsaved Changes", "Don't Save"});
+            var dontSaveButton = mainWindow.FindDescendentByNamePath(new[] { "Unsaved Changes", "Don't Save" });
 
-            Mouse.MoveTo(dontSaveButton.GetClickablePoint().ToDrawingPoint());
-            Mouse.Click(MouseButton.Left);
+
+            System.Windows.Point p = dontSaveButton.GetClickablePoint();
+            MouseTool.MouseClick(p);
+
         }
 
         private void DrawSpirographWaveOnCanvas(AutomationElement canvasElement)
@@ -62,22 +66,22 @@ namespace AutomationExample
 
             var points = GetPointsForSpirograph(centerX, centerY, 1.02, 5, 2, 0, 300);
 
-            Mouse.MoveTo(points.First());
-            Mouse.Down(MouseButton.Left);
-
+            MouseTool.MoveTo(points.First());
+            MouseTool.MouseClick(MouseTool.MOUSEEVENTF_LEFTDOWN);
             AnimateMouseThroughPoints(points);
 
-            Mouse.Up(MouseButton.Left);
+            MouseTool.MouseClick(MouseTool.MOUSEEVENTF_LEFTUP);
         }
 
         private void AnimateMouseThroughPoints(IEnumerable<Point> points)
         {
             foreach (var point in points)
             {
-                Mouse.MoveTo(point);
+                MouseTool.MoveTo(point);
                 Delay(5);
             }
         }
+
 
         private IEnumerable<Point> GetPointsForSpirograph(int centerX, int centerY, double littleR, double bigR, double a, int tStart, int tEnd)
         {
@@ -100,12 +104,13 @@ namespace AutomationExample
             var left = (int)bounds.Left;
             int center = (int)(bounds.Y + bounds.Height / 2);
 
-            Mouse.MoveTo(new Point(left, center));
-            Mouse.Down(MouseButton.Left);
+            MouseTool.MoveTo(new Point(left, center));
 
-            AnimateMouseThroughPoints(GetPointsForSineWave(left, (int) bounds.Right, center));
+            MouseTool.MouseClick(MouseTool.MOUSEEVENTF_LEFTDOWN);
 
-            Mouse.Up(MouseButton.Left);
+            AnimateMouseThroughPoints(GetPointsForSineWave(left, (int)bounds.Right, center));
+
+            MouseTool.MouseClick(MouseTool.MOUSEEVENTF_LEFTUP);
         }
 
         private IEnumerable<Point> GetPointsForSineWave(int left, int right, int verticalCenter)
